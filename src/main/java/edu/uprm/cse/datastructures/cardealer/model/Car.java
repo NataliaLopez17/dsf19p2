@@ -1,11 +1,15 @@
 package edu.uprm.cse.datastructures.cardealer.model;
 // Car class pojo
+
+
 public class Car {
 	private long carId;
 	private String carBrand;
 	private String carModel;
 	private String carModelOption;
 	private double carPrice;
+	
+	
 	public long getCarId() {
 		return carId;
 	}

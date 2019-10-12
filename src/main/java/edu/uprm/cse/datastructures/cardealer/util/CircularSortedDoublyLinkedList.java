@@ -3,7 +3,7 @@ package edu.uprm.cse.datastructures.cardealer.util;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class CircularDoublyLinkedList<E> implements SortedList<E>{
+public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 
 
 	private class Node<E>{
@@ -79,7 +79,7 @@ public class CircularDoublyLinkedList<E> implements SortedList<E>{
 	private Node<E> head;
 	private Comparator<E> comp;
 
-	public CircularDoublyLinkedList(Comparator<E> comparator) {
+	public CircularSortedDoublyLinkedList(Comparator<E> comparator) {
 		head = new Node<E>(null, head, head);
 		this.head.setElement(null);
 		this.head.setNext(head);
@@ -131,7 +131,7 @@ public class CircularDoublyLinkedList<E> implements SortedList<E>{
 	@Override
 	public boolean remove(E e) {
 		int i = this.firstIndex(e);
-		if(i > 0) {
+		if(i >= 0) {
 			this.remove(i);
 			return true;
 		}

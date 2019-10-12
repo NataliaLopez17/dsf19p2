@@ -16,12 +16,11 @@ import javax.ws.rs.core.Response;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
 import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
+import edu.uprm.cse.datastructures.cardealer.util.CircularSortedDoublyLinkedList;
 
-
+@Path("/cars")
 public class CarManager{
-	
-	@SuppressWarnings("unchecked")
-	private static final ArrayList<Car> cList = new ArrayList<Car>((Collection<? extends Car>) new CarComparator<Car>());
+	private static CircularSortedDoublyLinkedList<Car> cList = new CircularSortedDoublyLinkedList<Car>(new CarComparator());
 
 	/**
 	 * Gets all the people in the list.
@@ -29,10 +28,14 @@ public class CarManager{
 	 * @return array - array containing all the people in the list.
 	 */
 	@GET
-	@Path("/cars")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars() {
-		return cList.toArray(new Car[0]);
+		Car[] array = new Car[cList.size()];
+		for(int i = 0; i < cList.size(); i++) {
+			array[i] = cList.get(i);
+		}
+		return array;
+		
 	}
 
 	/**

@@ -1,8 +1,5 @@
 package edu.uprm.cse.datastructures.cardealer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -15,12 +12,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
-import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
-import edu.uprm.cse.datastructures.cardealer.util.CircularSortedDoublyLinkedList;
+import edu.uprm.cse.datastructures.cardealer.model.CarList;
+import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 @Path("/cars")
 public class CarManager{
-	private static CircularSortedDoublyLinkedList<Car> cList = new CircularSortedDoublyLinkedList<Car>(new CarComparator());
+	
 
 	/**
 	 * Gets all the people in the list.
@@ -30,6 +27,7 @@ public class CarManager{
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars() {
+		SortedList<Car> cList = CarList.getInstance();
 		Car[] array = new Car[cList.size()];
 		for(int i = 0; i < cList.size(); i++) {
 			array[i] = cList.get(i);
@@ -48,6 +46,7 @@ public class CarManager{
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car getPerson(@PathParam("id") long id) {
+		SortedList<Car> cList = CarList.getInstance();
 		for (int i = 0; i < cList.size(); i++) {
 			if (cList.get(i).getCarId() == id)
 				return cList.get(i);
@@ -66,6 +65,7 @@ public class CarManager{
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCar(Car car) {
+		SortedList<Car> cList = CarList.getInstance();
 		cList.add(car);
 		return Response.status(201).build();
 	}
@@ -81,6 +81,7 @@ public class CarManager{
 	@Path("{id}/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updatePerson(Car car) {
+		SortedList<Car> cList = CarList.getInstance();
 		for (int i = 0; i < cList.size(); i++) {
 			if (car.getCarId() == cList.get(i).getCarId()) {
 				cList.remove(i);
@@ -101,13 +102,14 @@ public class CarManager{
 	@DELETE
 	@Path("{id}/delete")
 	public Response deletePerson(@PathParam("id") long id) {
+		SortedList<Car> cList = CarList.getInstance();
 		for (int i = 0; i < cList.size(); i++) {
 			if (id == cList.get(i).getCarId()) {
 				cList.remove(cList.get(i));
 				return Response.status(Response.Status.OK).build();
 			}
 		}
-		throw new NotFoundException();
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 
 

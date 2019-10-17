@@ -1,7 +1,9 @@
 package edu.uprm.cse.datastructures.cardealer.util;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 
@@ -9,61 +11,44 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 	private class Node<E>{
 		private E element;
 		private Node<E> next, prev;
-
-		
 		public Node(E element, Node<E> next, Node<E> prev){
 			this.element=element;
 			this.next=next;
 			this.prev=prev;
 		}
-		
-		
 		public Node(){
 			this.element=null;
 			this.next=null;
 			this.prev=null;
 		}
-		
-		
 		public E getElement(){
 			return element;
 		}
-		
-		
 		public void setElement(E element){
 			this.element=element;
 		}
-		
-		
 		public Node<E> getNext(){
 			return next;
 		}
-		
-		
 		public Node<E> getPrev(){
 			return prev;
 		}
-		
-		
 		public void setNext(Node<E> next){
 			this.next=next;
 		}
-		
-		
 		public void setPrev(Node<E> prev) {
 			this.prev = prev;
 		}
 	}
 	
+	
+	
 	private class CircularDoublyLinkedListIterator<E> implements Iterator<E>{
-
 		Node<E> temp = new Node<E>();
-		
 		@Override
 		public boolean hasNext() {
 			return temp.getNext().getElement() != null;
 		}
-
 		@Override
 		public E next() {
 			if(this.hasNext()) {
@@ -71,9 +56,29 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 			}
 			return null;
 		}
-		
 	}
+	
+	/*
+	private class CircularDoublyLinkedListReverseIterator<E> implements Iterator<E>{
+		Node<E> temp = new Node<E>();
+		
+		@Override
+		public boolean hasNext() {
+			return temp.getPrev().getElement() != null;
+		}
+		
+		@Override
+		public E next() {
+			if(this.hasNext()) {
+				return temp.getPrev().getElement();
+			}
+			return null;
+		}
+	}
+	*/
 
+	
+	
 	
 	private int currentSize;
 	private Node<E> head;
@@ -91,9 +96,35 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 
 	@Override
 	public Iterator<E> iterator() {
-		return new CircularDoublyLinkedListIterator<E>();
+		List<E> newList = new ArrayList<E>();
+		
+		Node<E> newNode = this.head.getNext();
+		
+		while(newNode != head) {
+			newList.add(newNode.getElement());
+			newNode = newNode.getNext();
+		}
+		return newList.iterator();
 	}
-
+	
+	/*
+	public Iterator<E> reverseIterator(){
+		List<E> newList = new ArrayList<E>();
+		
+		Node<E> newNode = this.head.getPrev();
+		
+		while(newNode != head) {
+			newList.add(newNode.getElement());
+			newNode = newNode.getPrev();
+		}
+		return newList.iterator();
+		
+	}
+	*/
+	
+	
+	
+	
 	@Override
 	public boolean add(E obj) {
 		if(this.isEmpty()){

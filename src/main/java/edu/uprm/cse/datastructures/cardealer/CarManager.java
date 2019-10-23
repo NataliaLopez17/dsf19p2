@@ -20,9 +20,9 @@ public class CarManager{
 	
 
 	/**
-	 * Gets all the people in the list.
+	 * Gets all the cars in the list.
 	 * 
-	 * @return array - array containing all the people in the list.
+	 * @return array - array containing all the cars in the list.
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -37,10 +37,10 @@ public class CarManager{
 	}
 
 	/**
-	 * Gets the person in the id given.
+	 * Gets the car in the id given.
 	 * 
-	 * @param id - id of person.
-	 * @return person - if not found returns NotFoundException, else returns person.
+	 * @param id - id of car.
+	 * @return car - if not found returns NotFoundException, else returns the car.
 	 */
 	@GET
 	@Path("{id}")
@@ -55,11 +55,11 @@ public class CarManager{
 	}
 
 	/**
-	 * Adds the person to the list.
+	 * Adds the car to the list.
 	 * 
-	 * @param person - person to be added.
+	 * @param car - car to be added.
 	 * 
-	 * @return if person could be added.
+	 * @return if car could be added.
 	 */
 	@POST
 	@Path("/add")
@@ -71,11 +71,11 @@ public class CarManager{
 	}
 
 	/**
-	 * Updates the person of given id..
+	 * Updates the car of given id.
 	 * 
-	 * @param person - person with the updated information.
+	 * @param car - car with the updated information.
 	 * 
-	 * @return if person could be updated successfully, or if not found.
+	 * @return if car could be updated successfully, or if not found.
 	 */
 	@PUT
 	@Path("{id}/update")
@@ -93,11 +93,11 @@ public class CarManager{
 	}
 
 	/**
-	 * Deletes the person of given id.
+	 * Deletes the car of given id.
 	 * 
 	 * @param id - id of person to be deleted.
 	 * 
-	 * @return if person could be deleted successfully, or if not found.
+	 * @return if car could be deleted successfully, or if not found.
 	 */
 	@DELETE
 	@Path("{id}/delete")

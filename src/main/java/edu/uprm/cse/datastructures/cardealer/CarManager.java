@@ -59,7 +59,7 @@ public class CarManager{
 	 * 
 	 * @param car - car to be added.
 	 * 
-	 * @return if car could be added.
+	 * @return status 201 if car could be added.
 	 */
 	@POST
 	@Path("/add")
@@ -75,7 +75,7 @@ public class CarManager{
 	 * 
 	 * @param car - car with the updated information.
 	 * 
-	 * @return if car could be updated successfully, or if not found.
+	 * @return status OK if car could be updated successfully, not found if not.
 	 */
 	@PUT
 	@Path("{id}/update")
@@ -97,7 +97,7 @@ public class CarManager{
 	 * 
 	 * @param id - id of person to be deleted.
 	 * 
-	 * @return if car could be deleted successfully, or if not found.
+	 * @return status OK if car could be deleted successfully, not found if not.
 	 */
 	@DELETE
 	@Path("{id}/delete")

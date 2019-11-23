@@ -1,9 +1,5 @@
 package edu.uprm.cse.datastructures.cardealer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -14,75 +10,107 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import edu.uprm.cse.datastructures.cardealer.model.Car;
-import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
-import edu.uprm.cse.datastructures.cardealer.util.HashMap;
-import edu.uprm.cse.datastructures.cardealer.util.Map;
+import edu.uprm.cse.datastructures.cardealer.model.CarList;
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 @Path("/cars")
-public class CarManager {		
-	private static Map<Long, Car> mapList = new HashMap(20);
-//	Returns an array of cars based on carList instance.
+public class CarManager{
+	
+
+	/**
+	 * Gets all the cars in the list.
+	 * 
+	 * @return array - array containing all the cars in the list.
+	 */
 	@GET
-	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Car[] getAllCars() {		
-		ArrayList<Car> newCarList = new ArrayList<>(); 
-		for(Car car: mapList.getValues()) {
-			newCarList.add(car);
+	public Car[] getAllCars() {
+		SortedList<Car> cList = CarList.getInstance();
+		Car[] array = new Car[cList.size()];
+		for(int i = 0; i < cList.size(); i++) {
+			array[i] = cList.get(i);
 		}
-		Collections.sort(newCarList, new CarComparator());				
-		return  newCarList.toArray(new Car[0]);
+		return array;
+		
 	}
-	
-//	Returns a car with the given id_Key, and throws an exception if the given id_ID is not found or is null.
+
+	/**
+	 * Gets the car in the id given.
+	 * 
+	 * @param id - id of car.
+	 * @return car - if not found returns NotFoundException, else returns the car.
+	 */
 	@GET
-	@Path("/{id}")
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Car getCar(@PathParam("id") long index) {
-		
-		if(mapList.get(index) != null)
-			return mapList.get(index);
-		
-		throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
-		
+	public Car getPerson(@PathParam("id") long id) {
+		SortedList<Car> cList = CarList.getInstance();
+		for (int i = 0; i < cList.size(); i++) {
+			if (cList.get(i).getCarId() == id)
+				return cList.get(i);
+		}
+		throw new NotFoundException();
 	}
-	
-//	Adds the given car to the list if the id is unique. 
-//Returns response "CREATED" if id is unique and "NOT_ACCEPTABLE" if id is duplicate.
+
+	/**
+	 * Adds the car to the list.
+	 * 
+	 * @param car - car to be added.
+	 * 
+	 * @return status 201 if car could be added.
+	 */
 	@POST
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addCar(Car car) {		
-		if(car != null && mapList.get(car.getCarId()) == null) {			
-			mapList.put(car.getCarId(), car);
-			return Response.status(Response.Status.CREATED).build();
-		}		
-		return Response.status(Response.Status.NOT_ACCEPTABLE).build();		
-	}
-	
-//	If the given car is in the list its attributes are modified as given,
-//returns "OK" if successful and "NOT_FOUND" if car is not in list.
-	@PUT
-	@Path("/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateCar(Car car, @PathParam ("id") long carID) {		
-		if(car != null && car.getCarId() == carID && mapList.get(carID) != null) {
-			mapList.put(carID, car);
-			return Response.status(Response.Status.OK).build();
-		}				
-		return Response.status(Response.Status.NOT_FOUND).build();				
+	public Response addCar(Car car) {
+		SortedList<Car> cList = CarList.getInstance();
+		cList.add(car);
+		return Response.status(201).build();
 	}
 
-//	If given car id is in the list it is removed returning "OK" and "NOT_FOUND" if car is not on the list.
-	@DELETE
-	@Path("/{id}/delete")
+	/**
+	 * Updates the car of given id.
+	 * 
+	 * @param car - car with the updated information.
+	 * 
+	 * @return status OK if car could be updated successfully, not found if not.
+	 */
+	@PUT
+	@Path("{id}/update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response removeCar(@PathParam("id") long carID) {
-		if(mapList.remove(carID) != null)
-			return Response.status(Response.Status.OK).build();			
+	public Response updatePerson(Car car) {
+		SortedList<Car> cList = CarList.getInstance();
+		for (int i = 0; i < cList.size(); i++) {
+			if (car.getCarId() == cList.get(i).getCarId()) {
+				cList.remove(i);
+				cList.add(car);
+				return Response.status(Response.Status.OK).build();
+			}
+		}
 		return Response.status(Response.Status.NOT_FOUND).build();
-	}	
-	
+	}
+
+	/**
+	 * Deletes the car of given id.
+	 * 
+	 * @param id - id of person to be deleted.
+	 * 
+	 * @return status OK if car could be deleted successfully, not found if not.
+	 */
+	@DELETE
+	@Path("{id}/delete")
+	public Response deletePerson(@PathParam("id") long id) {
+		SortedList<Car> cList = CarList.getInstance();
+		for (int i = 0; i < cList.size(); i++) {
+			if (id == cList.get(i).getCarId()) {
+				cList.remove(cList.get(i));
+				return Response.status(Response.Status.OK).build();
+			}
+		}
+		return Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+
 }

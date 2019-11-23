@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
 import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
-import edu.uprm.cse.datastructures.cardealer.util.CircularDoublyLinkedList;
+import edu.uprm.cse.datastructures.cardealer.util.CircularSortedDoublyLinkedList;
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 public class ListTester {
@@ -14,7 +14,7 @@ public class ListTester {
 		
 		//System.out.println("true : " + list.isEmpty());
 		
-		SortedList<Car> cars = new CircularDoublyLinkedList<Car>(new CarComparator());
+		SortedList<Car> cars = new CircularSortedDoublyLinkedList<Car>(new CarComparator());
 		
 		cars.add(new Car((long) 1.0, "Toyota", "Rav4", "LE", 10000));
 		cars.add(new Car((long) 2.0, "Toyota", "Rav4", "SE", 15000));

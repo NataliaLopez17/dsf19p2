@@ -9,16 +9,37 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 	/**
 	 * Additional sub class for the Node
 	 */
+	private class Node<E>{ 
+		private E element; 
+		private Node<E> next, prev; 
 
-
-	private class Node<E>{ private E element; private Node<E> next, prev; public
-	Node(E element, Node<E> next, Node<E> prev){ this.element=element;
-	this.next=next; this.prev=prev; } public Node(){ this.element=null;
-	this.next=null; this.prev=null; } public E getElement(){ return element; }
-	public void setElement(E element){ this.element=element; } public Node<E>
-	getNext(){ return next; } public Node<E> getPrev(){ return prev; } public
-	void setNext(Node<E> next){ this.next=next; } public void setPrev(Node<E>
-	prev) { this.prev = prev; } }
+		public Node(E element, Node<E> next, Node<E> prev){ 
+			this.element=element;this.next=next; this.prev=prev; 
+		} 
+		public Node(){ 
+			this.element=null;
+			this.next=null; 
+			this.prev=null; 
+		} 
+		public E getElement(){ 
+			return element; 
+		}
+		public void setElement(E element){ 
+			this.element=element; 
+		} 
+		public Node<E> getNext(){
+			return next; 
+		} 
+		public Node<E> getPrev(){
+			return prev; 
+		} 
+		public void setNext(Node<E> next){ 
+			this.next=next; 
+		} 
+		public void setPrev(Node<E>prev) { 
+			this.prev = prev; 
+		} 
+	}
 
 
 	/**
@@ -32,8 +53,9 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>{
 	private class CircularDoublyLinkedListIterator<E> implements Iterator<E>{
 		Node<E> temp = new Node<E>();
 
-		@Override public boolean hasNext() { return temp.getNext().getElement() !=
-				null; }
+		@Override public boolean hasNext() { 
+			return temp.getNext().getElement() != null; 
+			}
 
 		@Override public E next() { if(this.hasNext()) { return
 				temp.getNext().getElement(); } return null; } }

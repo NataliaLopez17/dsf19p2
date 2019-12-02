@@ -1,15 +1,22 @@
 package edu.uprm.cse.datastructures.cardealer.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map.Entry;
 import java.util.Random;
 
-public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {  
+public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> { 
+	protected abstract void createTable();
+	protected abstract V getBucket(int i, K key);
+	protected abstract V putBucket(int i, K key, V value);
+	protected abstract V removeBucket(int i, K key);
 	protected int num = 0; 
 	protected int capacity;
 	private int primeNum; 
 	private long scaling, shifting; 
-	public AbstractHashMap(int c, int p) { 
+	protected Comparator<K> keyComparator;
+	protected Comparator<V> valueComparator;
+	public AbstractHashMap(int c, int p, Comparator<K> c1, Comparator<V> c2) { 
 		primeNum = p;
 		capacity = c;
 		Random rand = new Random();
@@ -17,12 +24,13 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 		shifting = rand.nextInt(primeNum);
 		createTable( );
 	} 
-	public AbstractHashMap(int cap) { 
-		this(cap, 109345121); 
+	public AbstractHashMap(int cap, Comparator<K> c1, Comparator<V> c2) { 
+		this(cap, 31, c1,c2); 
 	} 
-	public AbstractHashMap( ) { 
-		this(10); 
-	} 
+	
+	public AbstractHashMap(Comparator<K> c1, Comparator<V> c2) {
+		this(10, c1, c2);
+	}
 	public int size() {
 		return num; 
 	}  
@@ -35,14 +43,14 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 	public V put(K key, V value) { 
 		V answer = putBucket(hashValue(key), key, value);
 		if (num > capacity / 2) { // keep load factor <= 0.5
-			resize(2 * capacity - 1);// (or find a nearby prime)
+			reAllocate(2 * capacity - 1);// (or find a nearby prime)
 		} 
 		return answer;
 	}  
 	private int hashValue(K key) {
 		return (int) ((Math.abs(key.hashCode( )*scaling + shifting) % primeNum) % capacity);
 	}  
-	private void resize(int newCapacity) { 
+	private void reAllocate(int newCapacity) { 
 		ArrayList<Entry<K,V>> theBuffer = new ArrayList<>(num);
 		for (Entry<K,V> e : entrySets()) {
 			theBuffer.add(e);
@@ -55,8 +63,9 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 		}
 
 	} 
-	protected abstract void createTable();
-	protected abstract V getBucket(int i, K key);
-	protected abstract V putBucket(int i, K key, V value);
-	protected abstract V removeBucket(int i, K key);
+	public boolean contains(K key) {
+		return get(key) == null;
+	}
+	
+
 }

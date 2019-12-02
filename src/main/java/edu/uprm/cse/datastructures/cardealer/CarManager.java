@@ -17,8 +17,10 @@ import javax.ws.rs.core.Response;
 import edu.uprm.cse.datastructures.cardealer.model.Car;
 import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
 import edu.uprm.cse.datastructures.cardealer.model.CarList;
+import edu.uprm.cse.datastructures.cardealer.model.CarTable;
 import edu.uprm.cse.datastructures.cardealer.util.HashMap;
 import edu.uprm.cse.datastructures.cardealer.util.Map;
+import edu.uprm.cse.datastructures.cardealer.util.ProbingHashMap;
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 @Path("/cars")
@@ -26,7 +28,7 @@ public class CarManager{
 	/*
 	 * Returns an array of cars based on carList instance.
 	 */
-	private static Map<Long, Car> carMapList = new HashMap<>(20);
+	private static ProbingHashMap<Long, Car> carHashMap = CarTable.getInstance();
 
 	/**
 	 * Gets all the cars in the list.
@@ -37,12 +39,12 @@ public class CarManager{
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars() {		
-		ArrayList<Car> newCarList = new ArrayList<>(); 
-		for(Car car: carMapList.getValues()) {
-			newCarList.add(car);
-		}
-		Collections.sort(newCarList, new CarComparator());				
-		return  newCarList.toArray(new Car[0]);
+		SortedList<Car> newCarList = carHashMap.getValues();
+		ArrayList<Car> neue = new ArrayList<>();
+		for(int i = 0; i < newCarList.size(); i++) {
+			neue.add(newCarList.get(i));
+		}			
+		return  neue.toArray(new Car[0]);
 	}
 
 	/**
@@ -55,12 +57,12 @@ public class CarManager{
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car getCar(@PathParam("id") long index) {
-		
-		if(carMapList.get(index) != null)
-			return carMapList.get(index);
-		
+
+		if(carHashMap.get(index) != null)
+			return carHashMap.get(index);
+
 		throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
-		
+
 	}
 
 	/**
@@ -74,9 +76,11 @@ public class CarManager{
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCar(Car car) {		
-		if(car != null && carMapList.get(car.getCarId()) == null) {			
-			carMapList.put(car.getCarId(), car);
-			return Response.status(Response.Status.CREATED).build();
+		if(car != null) {
+			if(carHashMap.get(car.getCarId()) == null) {	
+				carHashMap.put(car.getCarId(), car);
+				return Response.status(Response.Status.CREATED).build();
+			}
 		}		
 		return Response.status(Response.Status.NOT_ACCEPTABLE).build();		
 	}
@@ -92,9 +96,12 @@ public class CarManager{
 	@Path("/{id}/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateCar(Car car, @PathParam ("id") long carID) {		
-		if(car != null && car.getCarId() == carID && carMapList.get(carID) != null) {
-			carMapList.put(carID, car);
-			return Response.status(Response.Status.OK).build();
+		if(car != null) {
+			if(car.getCarId() == carID && carHashMap.get(carID) != null) {
+				carHashMap.put(carID, car);
+				return Response.status(Response.Status.OK).build();
+			}
+
 		}				
 		return Response.status(Response.Status.NOT_FOUND).build();				
 	}
@@ -110,8 +117,9 @@ public class CarManager{
 	@Path("/{id}/delete")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeCar(@PathParam("id") long carID) {
-		if(carMapList.remove(carID) != null)
+		if(carHashMap.remove(carID) != null) {
 			return Response.status(Response.Status.OK).build();			
+		}	
 		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 

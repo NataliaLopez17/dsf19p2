@@ -75,13 +75,11 @@ public class CarManager{
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCar(Car car) {		
-		if(car != null) {
-			if(carHashMap.get(car.getCarId()) == null) {	
-				carHashMap.put(car.getCarId(), car);
-				return Response.status(Response.Status.CREATED).build();
-			}
+		if(car != null) {	
+			carHashMap.put(car.getCarId(), car);
+			return Response.status(Response.Status.CREATED).build();
 		}		
-		return Response.status(Response.Status.NOT_ACCEPTABLE).build();		
+		return Response.status(Response.Status.CONFLICT).build();		
 	}
 
 	/**

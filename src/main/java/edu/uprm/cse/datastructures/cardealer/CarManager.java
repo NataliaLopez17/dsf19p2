@@ -39,11 +39,11 @@ public class CarManager{
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars() {		
 		SortedList<Car> newCarList = carHashMap.getValues();
-		ArrayList<Car> neue = new ArrayList<>();
-		for(int i = 0; i < newCarList.size(); i++) {
-			neue.add(newCarList.get(i));
-		}			
-		return  neue.toArray(new Car[0]);
+		ArrayList<Car> neue = new ArrayList<>();	
+		for(Car c : newCarList) {
+			neue.add(c);
+		}
+		return neue.toArray(new Car[0]);
 	}
 
 	/**
@@ -56,12 +56,12 @@ public class CarManager{
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car getCar(@PathParam("id") long index) {
+		
+		if(carHashMap.get(index) == null) {
+			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
+		}
 
-		if(carHashMap.get(index) != null)
-			return carHashMap.get(index);
-
-		throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
-
+			return carHashMap.get(index);	
 	}
 
 	/**
@@ -93,12 +93,9 @@ public class CarManager{
 	@Path("/{id}/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateCar(Car car, @PathParam ("id") long carID) {		
-		if(car != null) {
-			if(car.getCarId() == carID && carHashMap.get(carID) != null) {
-				carHashMap.put(carID, car);
-				return Response.status(Response.Status.OK).build();
-			}
-
+		if(car != null && car.getCarId() == carID && carHashMap.get(carID) != null) {
+			carHashMap.put(carID, car);
+			return Response.status(Response.Status.OK).build();
 		}				
 		return Response.status(Response.Status.NOT_FOUND).build();				
 	}
@@ -114,10 +111,10 @@ public class CarManager{
 	@Path("/{id}/delete")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeCar(@PathParam("id") long carID) {
-		if(carHashMap.remove(carID) != null) {
-			return Response.status(Response.Status.OK).build();			
-		}	
-		return Response.status(Response.Status.NOT_FOUND).build();
+		if(carHashMap.remove(carID) == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.status(Response.Status.OK).build();			
 	}
 
 

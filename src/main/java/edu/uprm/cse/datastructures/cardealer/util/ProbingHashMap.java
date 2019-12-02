@@ -3,10 +3,11 @@ package edu.uprm.cse.datastructures.cardealer.util;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map.Entry;
+import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
 
 public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> { 
 	private MapEntry<K,V>[ ] table; // a fixed array of entries (all initially null)
-	private MapEntry<K,V> DELETED = new MapEntry<>(null, null); 
+	private MapEntry<K,V> DEFUNCT = new MapEntry<>(null, null); 
 	
 	public ProbingHashMap(Comparator<K> c1, Comparator<V> c2){
 		super(c1, c2);
@@ -21,7 +22,7 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 		table = (MapEntry<K,V>[ ]) new MapEntry[capacity]; 
 	} 
 	private boolean isAvailable(int i) { 
-		return (table[i] == null || table[i] == DELETED);
+		return (table[i] == null || table[i] == DEFUNCT);
 	}
 	private int hashFunct(int j, K key) {  
 		int availability = -1; // no slot available (thus far)
@@ -38,13 +39,13 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 			else if (table[i].getKey( ).equals(key)) {
 				return i; // successful match
 			}
-			i = (i+1) % capacity; // keep looking (cyclically)
+			i = ((j+1)*10) % capacity;
 		} 
 		while (i != j); // stop if we return to the start
-		return secondHashFunct(i,key);
+		return linearProbing(i,key);
 	}  
 	
-	private int secondHashFunct(int i, K key) {  
+	private int linearProbing(int i, K key) {  
 		int availability = -1; 
 		int j = i; 
 		do {  
@@ -59,8 +60,7 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 			else if (table[j].getKey( ).equals(key)) {
 				return j; 
 			}
-			j = ((j+1)^2) % capacity;
-			//j = (j+1) % capacity;
+			j = (j+1) % capacity;
 		} 
 		while (j != i); 
 		return -(availability + 1); 
@@ -91,7 +91,7 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 			return null; // nothing to remove
 		}
 		V result = table[i].getValue();
-		table[i] = DELETED; // mark this slot as deactivated
+		table[i] = DEFUNCT; // mark this slot as deactivated
 		num--;
 		return result;
 	}  
@@ -105,18 +105,24 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 	}
 	
 	public SortedList<K> getKeys() {
+		ArrayList<K> list = new ArrayList<K>();
+		for(int i = 0; i < this.size(); i++) {
+			list.add(table[i].getKey());
+		}
 		SortedList<K> neue = new CircularSortedDoublyLinkedList<K>(keyComparator);
-		Iterable<Entry<K,V>> entrySet = this.entrySets();
-		for(Entry<K, V> i : entrySet) {
-			neue.add(i.getKey());
+		for(int j = 0; j < list.size(); j++) {
+			neue.add(list.get(j));
 		}
 		return neue;
 	}
 	public SortedList<V> getValues() {
+		ArrayList<V> list = new ArrayList<V>();
+		for(int i = 0; i < this.size(); i++) {
+			list.add(table[i].getValue());
+		}
 		SortedList<V> neue = new CircularSortedDoublyLinkedList<V>(valueComparator);
-		Iterable<Entry<K,V>> entrySet = this.entrySets();
-		for(Entry<K, V> i : entrySet) {
-			neue.add(i.getValue());
+		for(int j = 0; j < list.size(); j++) {
+			neue.add(list.get(j));
 		}
 		return neue;
 	}

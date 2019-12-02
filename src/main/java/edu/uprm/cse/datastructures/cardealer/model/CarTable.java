@@ -17,11 +17,9 @@ public class CarTable {
 		}
 	public static  void resetCars() {
 			SortedList<Long> neue = CarTable.getKeys();
-			for(int i = 0; i < neue.size(); i++) {
-				CarTable.remove(neue.get(i));
+			for(Long k : neue) {
+				CarTable.remove(k);
 			}
-		
-		
 		}
 
 }

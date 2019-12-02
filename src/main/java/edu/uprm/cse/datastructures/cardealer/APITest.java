@@ -95,6 +95,7 @@ public class APITest {
 
         // Check response status code is 201 (Created)
         assertEquals("Response Status not equal", 201, response1.getStatus());
+        
 
         CarTable.resetCars();
     }

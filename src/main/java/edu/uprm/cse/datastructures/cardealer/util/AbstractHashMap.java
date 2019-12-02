@@ -27,7 +27,7 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 		createTable( );
 	} 
 	public AbstractHashMap(int cap, Comparator<K> c1, Comparator<V> c2) { 
-		this(cap, 31, c1,c2); 
+		this(cap, 11939, c1,c2); 
 	} 
 	
 	public AbstractHashMap(Comparator<K> c1, Comparator<V> c2) {
@@ -66,7 +66,7 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 
 	} 
 	public boolean contains(K key) {
-		return get(key) == null;
+		return get(key) != null;
 	}
 	
 

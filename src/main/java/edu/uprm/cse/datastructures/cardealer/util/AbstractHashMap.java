@@ -19,6 +19,8 @@ public abstract class AbstractHashMap<K,V> extends AbstractMap<K,V> {
 	public AbstractHashMap(int c, int p, Comparator<K> c1, Comparator<V> c2) { 
 		primeNum = p;
 		capacity = c;
+		keyComparator = c1;
+		valueComparator = c2;
 		Random rand = new Random();
 		scaling = rand.nextInt(primeNum-1) + 1;
 		shifting = rand.nextInt(primeNum);

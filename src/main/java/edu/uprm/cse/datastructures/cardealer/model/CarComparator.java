@@ -2,18 +2,15 @@ package edu.uprm.cse.datastructures.cardealer.model;
 
 import java.util.Comparator;
 
-public class CarComparator<E> implements Comparator<E>{
+public class CarComparator implements Comparator<Car>{
 
 	@Override
-	public int compare(E o1, E o2) {
+	public int compare(Car c1, Car c2) {
 
-		if(!(o1 instanceof Car) && (!(o2 instanceof Car))) {
+		if(!(c1 instanceof Car) && (!(c2 instanceof Car))) {
 			throw new IllegalStateException("Object isnt an instance of Car.");
 
 		}
-		
-		Car c1 = (Car) o1;
-		Car c2 = (Car) o2;
 
 		if(c1.getCarBrand().compareTo(c2.getCarBrand()) == 0) {
 			if(c1.getCarModel().compareTo(c2.getCarModel()) == 0) {

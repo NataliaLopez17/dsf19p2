@@ -1,5 +1,7 @@
 package edu.uprm.cse.datastructures.cardealer.util;
 
+import java.util.Map.Entry;
+
 public interface Map<K, V> {
 
     public int size();
@@ -17,7 +19,5 @@ public interface Map<K, V> {
     public SortedList<K> getKeys();
 
     public SortedList<V> getValues();
-
-
-
+	Iterable<Entry<K,V>> entrySets();
 }

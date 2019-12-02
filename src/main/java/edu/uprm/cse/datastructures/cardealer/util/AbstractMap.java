@@ -3,7 +3,7 @@ package edu.uprm.cse.datastructures.cardealer.util;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public abstract class AbstractMap<K,V> implements SecondMap<K,V> { 
+public abstract class AbstractMap<K,V> implements Map<K,V> { 
 	public boolean isEmpty( ) { 
 		return size() == 0; 
 	} 

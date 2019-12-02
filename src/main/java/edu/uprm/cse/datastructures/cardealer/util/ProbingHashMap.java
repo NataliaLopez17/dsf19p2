@@ -41,7 +41,7 @@ public class ProbingHashMap<K,V> extends AbstractHashMap<K,V> {
 			i = (i+1) % capacity; // keep looking (cyclically)
 		} 
 		while (i != j); // stop if we return to the start
-		return -(availability + 1); // search has failed
+		return secondHashFunct(i,key);
 	}  
 	
 	private int secondHashFunct(int i, K key) {  

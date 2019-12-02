@@ -28,7 +28,7 @@ public class CarManager{
 	/*
 	 * Returns an array of cars based on carList instance.
 	 */
-	private static ProbingHashMap<Long, Car> carHashMap = CarTable.getInstance();
+	private static Map<Long, Car> carHashMap = CarTable.getInstance();
 
 	/**
 	 * Gets all the cars in the list.
@@ -36,7 +36,6 @@ public class CarManager{
 	 * @return array - array containing all the cars in the list.
 	 */
 	@GET
-	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars() {		
 		SortedList<Car> newCarList = carHashMap.getValues();

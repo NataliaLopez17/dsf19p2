@@ -8,7 +8,7 @@ import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 public class CarTable {
 	public int size = CarTable.size();
 
-
+	
 	public static  Map<Long,Car> CarTable = new HashTableOA<Long, Car>(
 			10,new ValueComparator(),new CarComparator());
 

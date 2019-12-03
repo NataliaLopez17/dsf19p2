@@ -59,23 +59,23 @@ public class HashTableOA<K,V> implements Map<K,V>{
 
 
 
-	public void reAllocate(int newCapacity) { 
-		ArrayList<Entry<K,V>> theBuffer = new ArrayList<>(num);
-		for (Entry<K,V> e : entrySets()) {
-			theBuffer.add(e);
-		}
-		capacity = newCapacity;
-		createTable( ); // based on updated capacity
+	public void reAllocate() { 
+
+		Object[] temp = this.table;
+		capacity *= 2;
+		this.table = new Object[capacity];
+		createTable(); // based on updated capacity
 		num = 0; // will be recomputed while reinserting entries
-		for (Entry<K,V> e : theBuffer) {
-			put(e.getKey( ), e.getValue( ));
+		for (Object o : temp) {
+			MapEntry<K,V> e = (MapEntry<K,V>)o;
+			put(e.getKey(), e.getValue());
 		}
 	} 
 
 
 	public void createTable() { 
 		for(int i = 0; i < table.length; i++) {
-			table[i] = DEFUNCT;
+			table[i] = new MapEntry<K, V>(null, null);
 		}
 	} 
 	public boolean isAvailable(int i) { 
@@ -96,97 +96,95 @@ public class HashTableOA<K,V> implements Map<K,V>{
 	public boolean contains(K key) {
 		return get(key) != null;
 	}
-
-
-
 	public int hashValue(K key) {
 		return (int) ((Math.abs(key.hashCode( )*scaling + shifting) % primeNum) % capacity);
 	} 
+	public int hashValue2(K key) {
+		return (int) Math.round((Math.pow(hashValue(key), 2))% capacity);
+	}
+
 
 
 
 	public V putHashFunct(int i, K key, V value) {  
 		int availability = -1; // no slot available (thus far)
 		int j = i; // index while scanning table
-		do {  
-			if (isAvailable(j)) { // may be either empty or deleted
-				if (availability == -1) {
-					availability = j; // this is the first available slot!
-					((MapEntry<K,V>) table[j]).setKey(key);
-					((MapEntry<K,V>) table[j]).setValue(value);
-					return null;
-				}
-				if (table[j] == null) {
-					break; // if empty, search fails immediately
-				}
-			} 
-			else if (key.equals(((MapEntry<K,V>) table[i]).getKey())) {
-				V anotherOne = ((MapEntry<K, V>) table[i]).getValue();
-				((MapEntry<K,V>) table[j]).setValue(value);
-				return anotherOne; // successful match
+
+		int hash1 = hashValue(key);
+		int hash2 = hashValue2(key);
+
+		if (isAvailable(hash1) || key.equals(((MapEntry<K,V>) table[hash1]).getKey())) {
+			V valueToReturn = ((MapEntry<K,V>) table[hash1]).getValue();
+			if(isAvailable(hash1)) {
+				this.num++;
 			}
-			j = ((j+1)^2) % capacity;
-		} 
-		while (j != i); // stop if we return to the start
+			// this is the first available slot!
+			((MapEntry<K,V>) table[hash1]).setKey(key);
+			((MapEntry<K,V>) table[hash1]).setValue(value);
+
+			return valueToReturn;
+		}
+
+		if (isAvailable(hash2) || key.equals(((MapEntry<K,V>) table[hash2]).getKey())) {
+			V valueToReturn = ((MapEntry<K,V>) table[hash2]).getValue();
+			if(isAvailable(hash2)) {
+				this.num++;
+			}
+			((MapEntry<K,V>) table[hash2]).setKey(key);
+			((MapEntry<K,V>) table[hash2]).setValue(value);
+
+			return valueToReturn;
+		}
+
+		j = hash2 + 1;
 
 		do {  
-			if (isAvailable(j)) { 
-				if (availability == -1) {
-					availability = j;
-					((MapEntry<K,V>) table[j]).setKey(key);
-					((MapEntry<K,V>) table[j]).setValue(value);
-					return null;
-
+			if (isAvailable(j) || key.equals(((MapEntry<K,V>) table[j]).getKey())) { 
+				V valueToReturn = ((MapEntry<K,V>) table[j]).getValue();
+				if(isAvailable(j)) {
+					this.num++;
 				}
-				if (table[j] == null) {
-					break; 
-				}
-			} 
-			else if (key.equals(((MapEntry<K,V>) table[j]).getKey())) {
-				V anotherOne = ((MapEntry<K, V>) table[i]).getValue();
+				((MapEntry<K,V>) table[j]).setKey(key);
 				((MapEntry<K,V>) table[j]).setValue(value);
-				return anotherOne; // successful match 
+
+				return valueToReturn;
 			}
+
 			j = (j+1) % capacity;
 		} 
-		while (j != i); 
+		while (j != hash2); 
 		return null;
 	}  
 
 
 	public MapEntry<K,V> getHashFunct(int i, K key, V value) {  
-		int j = i; // index while scanning table
-		do {  
-			if (isEmpty()) { // may be either empty or deleted
-				return null;
-			}
-			if (table[j] == null) {
-				break; // if empty, search fails immediately
-			}
-			else if (key.equals(((MapEntry<K,V>) table[i]).getKey())) {
-				return (HashTableOA<K, V>.MapEntry<K, V>) ((MapEntry<K,V>) table[i]).getValue(); // successful match
-			}
-			j = ((j+1)^2) % capacity;
-		} 
-		while (j != i); // stop if we return to the start
+
+		int hash1 = hashValue(key);
+		int hash2 = hashValue2(key);
+
+		if (key.equals(((MapEntry<K,V>) table[hash1]).getKey())) { 
+			return ((MapEntry<K,V>) table[hash1]);
+		}
+
+		if (key.equals(((MapEntry<K,V>) table[hash2]).getKey())) { 
+			return ((MapEntry<K,V>) table[hash2]);
+		}
+
+		int j = (hash2 + 1) % capacity;
 
 		do {  
-			if (isEmpty()) { 
-				return null;
+			MapEntry<K, V> entry = ((MapEntry<K,V>) table[j]);
+			if (key.equals(entry.getKey())) {
+				return ((MapEntry<K,V>) table[j]);
 			}
-			if (table[j] == null) {
-				break; 
-			} 
-			else if (key.equals(((MapEntry<K,V>) table[j]).getKey())) {
-				return ((MapEntry<K, V>) table[i]);
-			}
+
 			j = (j+1) % capacity;
 		} 
-		while (j != i); 
-		return null;
+		while (j != hash2); 
+		return DEFUNCT;
 	} 
-	
-	
+
+
 	/** Returns value associated with key key in bucket with hash value j, or else null. */
 	@Override
 	public V get(K key) {
@@ -196,6 +194,10 @@ public class HashTableOA<K,V> implements Map<K,V>{
 	/** Associates key key with value value in bucket with hash value j; returns old value. */
 	@Override
 	public V put(K key, V value) {
+		//check size and reallocate if necessary
+		if(this.size() == this.capacity) {
+			reAllocate();
+		}
 		int j = hashValue(key);
 		return putHashFunct(j, key, value);
 	}
@@ -210,7 +212,7 @@ public class HashTableOA<K,V> implements Map<K,V>{
 		toDelete.setKey(null);
 		return value;
 	}
-	
+
 	/** Returns an iterable collection of all key-value entries of the map. */
 	public Iterable<Entry<K,V>> entrySets() { 
 		ArrayList<Entry<K,V>> theBuffer = new ArrayList<>( );

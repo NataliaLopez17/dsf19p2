@@ -3,7 +3,6 @@ package edu.uprm.cse.datastructures.cardealer.model;
 import edu.uprm.cse.datastructures.cardealer.util.ValueComparator;
 import edu.uprm.cse.datastructures.cardealer.util.Map;
 import edu.uprm.cse.datastructures.cardealer.util.HashTableOA;
-import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 public class CarTable {
 	public int size = CarTable.size();

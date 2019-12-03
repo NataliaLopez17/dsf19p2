@@ -1,8 +1,6 @@
 package edu.uprm.cse.datastructures.cardealer;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -11,15 +9,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
-import edu.uprm.cse.datastructures.cardealer.model.CarComparator;
-import edu.uprm.cse.datastructures.cardealer.model.CarList;
 import edu.uprm.cse.datastructures.cardealer.model.CarTable;
 import edu.uprm.cse.datastructures.cardealer.util.Map;
-import edu.uprm.cse.datastructures.cardealer.util.HashTableOA;
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 @Path("/cars")
@@ -57,7 +53,7 @@ public class CarManager{
 	public Car getCar(@PathParam("id") long index) {
 		
 		if(carHashMap.get(index) == null) {
-			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
+			throw new WebApplicationException(404);
 		}
 
 			return carHashMap.get(index);	
@@ -74,7 +70,7 @@ public class CarManager{
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCar(Car car) {		
-		if(car != null) {	
+		if(!carHashMap.contains(car.getCarId())) {	
 			carHashMap.put(car.getCarId(), car);
 			return Response.status(Response.Status.CREATED).build();
 		}		

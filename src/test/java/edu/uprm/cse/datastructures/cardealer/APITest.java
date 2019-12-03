@@ -239,7 +239,10 @@ public class APITest {
 
         Car responseCar2 = getCar(car2);
 
+        
         Car[] cars = getCars();
+        
+      
 
         // Check cars are in order
         assertArrayEquals("CarTable not in order", new Car[]{car1, car2}, cars);

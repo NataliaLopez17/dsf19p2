@@ -20,7 +20,7 @@ import edu.uprm.cse.datastructures.cardealer.model.CarList;
 import edu.uprm.cse.datastructures.cardealer.model.CarTable;
 import edu.uprm.cse.datastructures.cardealer.util.HashMap;
 import edu.uprm.cse.datastructures.cardealer.util.Map;
-import edu.uprm.cse.datastructures.cardealer.util.ProbingHashMap;
+import edu.uprm.cse.datastructures.cardealer.util.HashTableOA;
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 @Path("/cars")
@@ -28,7 +28,7 @@ public class CarManager{
 	/*
 	 * Returns an array of cars based on carList instance.
 	 */
-	private static Map<Long, Car> carHashMap = CarTable.getInstance();
+	private Map<Long, Car> carHashMap = CarTable.getInstance();
 
 	/**
 	 * Gets all the cars in the list.
@@ -40,10 +40,10 @@ public class CarManager{
 	public Car[] getAllCars() {		
 		SortedList<Car> newCarList = carHashMap.getValues();
 		ArrayList<Car> neue = new ArrayList<>();	
-		for(Car c : newCarList) {
-			neue.add(c);
+		for(int i = 0; i < newCarList.size(); i++) {
+			neue.add(newCarList.get(i));
 		}
-		return neue.toArray(new Car[0]);
+		return neue.toArray(new Car[newCarList.size()]);
 	}
 
 	/**
